@@ -459,7 +459,8 @@ function Customers() {
                             "center"
                     }}
                 >
-                    <div style={{
+                    <div
+                        style={{
                             background:
                                 "white",
                             padding:
