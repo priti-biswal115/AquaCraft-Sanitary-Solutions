@@ -16,6 +16,8 @@ public class Invoice
 
     public decimal GrandTotal { get; set; }
 
+    public string? PdfPath { get; set; }
+
     public string Status { get; set; } = "Generated";
 
     public DateTime CreatedDate { get; set; }
@@ -24,4 +26,6 @@ public class Invoice
 
     public ICollection<InvoiceItem> InvoiceItems { get; set; }
         = new List<InvoiceItem>();
+
+    
 }

@@ -1,7 +1,5 @@
 namespace AquaCraft.API.Models;
 
-//own business data
-
 public class BusinessSettings
 {
     public int BusinessId { get; set; }

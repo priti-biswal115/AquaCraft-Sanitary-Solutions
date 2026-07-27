@@ -12,8 +12,7 @@ public class Customer
 
     public string GSTNo { get; set; } = string.Empty;
 
-    public ICollection<Invoice> Invoices { get; set; }
-        = new List<Invoice>();
+    public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
     public ICollection<CustomerPricing> CustomerPricings { get; set; }
         = new List<CustomerPricing>();

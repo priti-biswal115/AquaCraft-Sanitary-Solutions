@@ -13,6 +13,5 @@ public class Product
     public ICollection<CustomerPricing> CustomerPricings { get; set; }
         = new List<CustomerPricing>();
 
-    public ICollection<InvoiceItem> InvoiceItems { get; set; }
-        = new List<InvoiceItem>();
+    public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
 }

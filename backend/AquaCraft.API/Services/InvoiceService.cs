@@ -43,7 +43,6 @@ public class InvoiceService : IInvoiceService
         var invoice = MapToEntity(invoiceDto);
 
         invoice.InvoiceNumber = GenerateInvoiceNumber();
-
         invoice.CreatedDate = DateTime.Now;
 
         var createdInvoice = await _invoiceRepository.AddAsync(invoice);
@@ -51,7 +50,40 @@ public class InvoiceService : IInvoiceService
         return MapToDto(createdInvoice);
     }
 
-    public async Task<InvoiceDto?> UpdateInvoiceAsync(int id, InvoiceDto invoiceDto)
+    public async Task<InvoiceResponseDto> SaveInvoiceAsync(CreateInvoiceDto dto)
+    {
+        var invoice = new Invoice
+        {
+            CustomerId = dto.CustomerId,
+            SubTotal = dto.SubTotal,
+            GSTAmount = dto.GSTAmount,
+            GrandTotal = dto.GrandTotal
+        };
+
+        var invoiceItems = dto.Items.Select(item => new InvoiceItem
+        {
+            ProductId = item.ProductId,
+            Quantity = item.Quantity,
+            Rate = item.Rate,
+            Amount = item.Amount
+        }).ToList();
+
+        var savedInvoice =
+            await _invoiceRepository.AddInvoiceWithItemsAsync(
+                invoice,
+                invoiceItems
+            );
+
+        return new InvoiceResponseDto
+        {
+            InvoiceId = savedInvoice.InvoiceId,
+            InvoiceNumber = savedInvoice.InvoiceNumber
+        };
+    }
+
+    public async Task<InvoiceDto?> UpdateInvoiceAsync(
+        int id,
+        InvoiceDto invoiceDto)
     {
         var invoice = await _invoiceRepository.GetByIdAsync(id);
 
@@ -60,7 +92,8 @@ public class InvoiceService : IInvoiceService
 
         invoice.Status = invoiceDto.Status;
 
-        var updatedInvoice = await _invoiceRepository.UpdateAsync(invoice);
+        var updatedInvoice =
+            await _invoiceRepository.UpdateAsync(invoice);
 
         return MapToDto(updatedInvoice);
     }
@@ -87,23 +120,33 @@ public class InvoiceService : IInvoiceService
         {
             InvoiceId = invoice.InvoiceId,
             InvoiceNumber = invoice.InvoiceNumber,
+
             CustomerId = invoice.CustomerId,
+            CustomerName = invoice.Customer?.CustomerName ?? "",
+            CustomerPhone = invoice.Customer?.Phone,
+            CustomerAddress = invoice.Customer?.Address,
+            CustomerGST = invoice.Customer?.GSTNo,
+
             InvoiceDate = invoice.InvoiceDate,
+
             SubTotal = invoice.SubTotal,
             GSTAmount = invoice.GSTAmount,
             GrandTotal = invoice.GrandTotal,
+
             Status = invoice.Status,
             CreatedDate = invoice.CreatedDate,
 
-            InvoiceItems = invoice.InvoiceItems.Select(ii => new InvoiceItemDto
-            {
-                InvoiceItemId = ii.InvoiceItemId,
-                InvoiceId = ii.InvoiceId,
-                ProductId = ii.ProductId,
-                Quantity = ii.Quantity,
-                Rate = ii.Rate,
-                Amount = ii.Amount
-            }).ToList()
+            InvoiceItems = invoice.InvoiceItems
+                .Select(ii => new InvoiceItemDto
+                {
+                    ProductId = ii.ProductId,
+                    ProductName = ii.Product?.ProductName ?? "",
+
+                    Quantity = ii.Quantity,
+                    Rate = ii.Rate,
+                    Amount = ii.Amount
+                })
+                .ToList()
         };
     }
 
@@ -113,19 +156,23 @@ public class InvoiceService : IInvoiceService
         {
             CustomerId = invoiceDto.CustomerId,
             InvoiceDate = invoiceDto.InvoiceDate,
+
             SubTotal = invoiceDto.SubTotal,
             GSTAmount = invoiceDto.GSTAmount,
             GrandTotal = invoiceDto.GrandTotal,
+
             Status = invoiceDto.Status,
             CreatedDate = invoiceDto.CreatedDate,
 
-            InvoiceItems = invoiceDto.InvoiceItems.Select(ii => new InvoiceItem
-            {
-                ProductId = ii.ProductId,
-                Quantity = ii.Quantity,
-                Rate = ii.Rate,
-                Amount = ii.Amount
-            }).ToList()
+            InvoiceItems = invoiceDto.InvoiceItems
+                .Select(ii => new InvoiceItem
+                {
+                    ProductId = ii.ProductId,
+                    Quantity = ii.Quantity,
+                    Rate = ii.Rate,
+                    Amount = ii.Amount
+                })
+                .ToList()
         };
     }
 }

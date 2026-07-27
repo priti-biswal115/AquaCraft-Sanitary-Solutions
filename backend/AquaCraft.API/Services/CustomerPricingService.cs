@@ -9,18 +9,29 @@ public class CustomerPricingService : ICustomerPricingService
 {
     private readonly CustomerPricingRepository _customerPricingRepository;
 
-    public CustomerPricingService(CustomerPricingRepository customerPricingRepository)
+    public CustomerPricingService(
+        CustomerPricingRepository customerPricingRepository)
     {
         _customerPricingRepository = customerPricingRepository;
     }
 
-    public async Task<IEnumerable<CustomerPricingDto>> GetByCustomerIdAsync(int customerId)
+    public async Task<IEnumerable<CustomerPricingDto>> GetAllAsync()
     {
-        var pricings = await _customerPricingRepository.GetByCustomerIdAsync(customerId);
+        var pricings = await _customerPricingRepository.GetAllAsync();
+
         return pricings.Select(MapToDto);
     }
 
-    public async Task<CustomerPricingDto> SetCustomerPricingAsync(CustomerPricingDto dto)
+    public async Task<IEnumerable<CustomerPricingDto>> GetByCustomerIdAsync(
+        int customerId)
+    {
+        var pricings = await _customerPricingRepository.GetByCustomerIdAsync(customerId);
+
+        return pricings.Select(MapToDto);
+    }
+
+    public async Task<CustomerPricingDto> SetCustomerPricingAsync(
+        CustomerPricingDto dto)
     {
         var entity = new CustomerPricing
         {
@@ -32,8 +43,31 @@ public class CustomerPricingService : ICustomerPricingService
         var created = await _customerPricingRepository.AddAsync(entity);
 
         var full = await _customerPricingRepository.GetByIdAsync(created.PricingId);
-        return full == null ? MapToDto(created) : MapToDto(full);
+
+        return full == null
+            ? MapToDto(created)
+            : MapToDto(full);
     }
+
+    public async Task<CustomerPricingDto?>
+    UpdateCustomerPricingAsync(
+        int id,
+        CustomerPricingDto dto)
+    {
+        var pricing = await _customerPricingRepository.GetByIdAsync(id);
+
+        if (pricing == null)
+            return null;
+
+        pricing.CustomerId = dto.CustomerId;
+        pricing.ProductId = dto.ProductId;
+        pricing.Rate = dto.Rate;
+
+        var updated = await _customerPricingRepository.UpdateAsync(pricing);
+
+        return MapToDto(updated);
+    }
+
 
     public async Task<bool> DeleteCustomerPricingAsync(int id)
     {
@@ -45,10 +79,17 @@ public class CustomerPricingService : ICustomerPricingService
         return new CustomerPricingDto
         {
             PricingId = pricing.PricingId,
+
             CustomerId = pricing.CustomerId,
-            CustomerName = pricing.Customer?.CustomerName ?? string.Empty,
+            CustomerName =
+                pricing.Customer?.CustomerName
+                ?? string.Empty,
+
             ProductId = pricing.ProductId,
-            ProductName = pricing.Product?.ProductName ?? string.Empty,
+            ProductName =
+                pricing.Product?.ProductName
+                ?? string.Empty,
+
             Rate = pricing.Rate
         };
     }

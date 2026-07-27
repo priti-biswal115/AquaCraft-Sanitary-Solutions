@@ -507,7 +507,8 @@ VALUES
 GO
 
 
-select * from Invoices;
+SELECT *
+FROM Invoices
 
 
 SELECT name
