@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7001/api/Customers";
+import { BASE_URL } from "./baseUrl";
+
+const API_URL = `${BASE_URL}/Customers`;
 
 export const getCustomers = async () => {
     const response = await axios.get(API_URL);

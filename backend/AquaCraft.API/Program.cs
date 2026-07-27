@@ -47,6 +47,17 @@ builder.Services.AddScoped<PdfService>();
 builder.Services.AddScoped<BusinessSettingsRepository>();
 builder.Services.AddScoped<IBusinessSettingsService,BusinessSettingsService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 
 var app = builder.Build();
@@ -57,8 +68,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("ReactPolicy");
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
+
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();

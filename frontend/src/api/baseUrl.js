@@ -1,1 +1,1 @@
-export const BASE_URL = "https://localhost:7001";
+export const BASE_URL = "https://aquacraft-api-priti-v2-bebagfdygbg3f3bg.centralindia-01.azurewebsites.net/api";

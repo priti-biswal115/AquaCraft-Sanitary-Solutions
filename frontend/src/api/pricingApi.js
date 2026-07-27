@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const API_URL =
-    "https://localhost:7001/api/CustomerPricing";
+import { BASE_URL } from "./baseUrl";
+
+const API_URL = `${BASE_URL}/CustomerPricing`;
 
 export const getCustomerPricing = async (
     customerId

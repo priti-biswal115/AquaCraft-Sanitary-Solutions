@@ -76,12 +76,26 @@ public class InvoicesController : ControllerBase
     public async Task<ActionResult<InvoiceResponseDto>> SaveInvoice(
         CreateInvoiceDto createInvoiceDto)
     {
-        var response =  await _invoiceService.SaveInvoiceAsync(createInvoiceDto);
+        try
+        {
+            var response =
+                await _invoiceService.SaveInvoiceAsync(createInvoiceDto);
 
-        return CreatedAtAction(
-            nameof(GetInvoiceById),
-            new { id = response.InvoiceId },
-            response);
+            return CreatedAtAction(
+                nameof(GetInvoiceById),
+                new { id = response.InvoiceId },
+                response);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new
+                {
+                    Error = ex.Message,
+                    Details = ex.InnerException?.Message
+                });
+        }
     }
 
     [HttpPut("{id}")]

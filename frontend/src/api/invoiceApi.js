@@ -1,8 +1,9 @@
 ﻿// API functions for invoice-related operations will be implemented here.
 import axios from "axios";
+
 import { BASE_URL } from "./baseUrl";
 
-const INVOICE_API_URL = `${BASE_URL}/api/invoices`;
+const INVOICE_API_URL = `${BASE_URL}/Invoices`;
 
 export const getInvoices = async () => {
   try {

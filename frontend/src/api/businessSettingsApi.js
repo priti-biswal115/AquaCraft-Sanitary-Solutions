@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7001/api/BusinessSettings";
+import { BASE_URL } from "./baseUrl";
+
+const API_URL = `${BASE_URL}/BusinessSettings`;
 
 export const getBusinessSettings =
     async () => {
