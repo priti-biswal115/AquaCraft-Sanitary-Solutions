@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { getInvoiceById } from "../api/invoiceApi";
 import { getBusinessSettings } from "../api/businessSettingsApi";
+import { BASE_URL } from "../api/baseUrl";
 
 function InvoicePreview() {
     const { invoiceId } = useParams();
@@ -44,7 +45,7 @@ function InvoicePreview() {
             setDownloading(true);
 
             const response = await fetch(
-                `https://localhost:7001/api/invoices/${invoiceId}/pdf`
+                `${BASE_URL}/Invoices/${invoiceId}/pdf`
             );
 
             if (!response.ok) {
